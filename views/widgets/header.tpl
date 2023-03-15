@@ -2,7 +2,11 @@
     <div class="container">
         <div class="navbar-header col-sm-12 col-md-9 col-lg-8">
             <a href="{{.BaseUrl}}/" class="navbar-brand" title="{{.SITE_NAME}}">
-                卢安云文档管理系统
+                {{if .SITE_TITLE}}
+                {{.SITE_TITLE}}
+                {{else}}
+                {{.SITE_NAME}}
+                {{end}}
             </a>
             <nav class="collapse navbar-collapse col-sm-10">
                 <ul class="nav navbar-nav">

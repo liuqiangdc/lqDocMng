@@ -91,3 +91,19 @@ mindoc_windows_amd64.exe install
 
 `./mindoc`
 
+# 5. 正常开发
+
+* 保证数据库软件是打开的（打开mysql workBench，然后链接数据库）
+* 源码根目录下，git bash 页面下执行`./mindoc`
+* 浏览器访问页面
+* 修改代码后保存代码。
+* 先停止之前的服务（ctrl+c）
+* 再次启动服务执行`./mindoc`
+
+# 6. 页面文字配置
+
+在`conf\lang\zh-cn.ini`目录下。
+
+# 7. 参考
+
+[1]. https://doc.gsw945.com/docs/mindoc-docs/mindoc-windows.md
