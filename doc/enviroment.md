@@ -37,7 +37,9 @@ go
 链接数据库`mysql -u root -p`
 输入密码`123456`
 ```
-* 新建数据库。执行`CREATE DATABASE mindoc_db  DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_general_ci;`
+* 新建数据库。执行`CREATE DATABASE laykbms_db  DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_general_ci;`
+CREATE DATABASE laykbms_db  DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_general_ci;
+mysqldump laykbms_db -u root -p123456  | mysql laykbms_db -u root -p123456
 * 配置数据库连接。
 
 ```
@@ -51,7 +53,7 @@ db_host=127.0.0.1
 db_port=3306
 
 #刚才创建的数据库的名称
-db_database=mindoc_db
+db_database=laykbms_db
 
 #访问数据库的账号和密码
 db_username=root
