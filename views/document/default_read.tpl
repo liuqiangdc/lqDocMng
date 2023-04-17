@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 
-    <title>{{.Title}} - Powered by MinDoc</title>
+    <title>{{.Title}} - Powered by LayKbms</title>
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -156,7 +156,7 @@
             <div class="m-copyright">
                 <p>
                     <div id="view_count">{{i18n .Lang "doc.view_count"}}：{{.ViewCount}}</div>
-                    {{i18n $.Lang "doc.doc_publish_by"}} <a href="https://www.iminho.me" target="_blank">MinDoc</a> {{i18n $.Lang "doc.doc_publish"}}
+                    {{i18n $.Lang "doc.doc_publish_by"}} LayKbms {{i18n $.Lang "doc.doc_publish"}}
                 </p>
             </div>
         </div>

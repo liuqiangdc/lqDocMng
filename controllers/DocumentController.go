@@ -199,7 +199,7 @@ func (c *DocumentController) Read() {
 		data.DocIdentify = doc.Identify
 		data.DocTitle = doc.DocumentName
 		data.Body = doc.Release
-		data.Title = doc.DocumentName + " - Powered by MinDoc"
+		data.Title = doc.DocumentName + " - Powered by LayKbms"
 		data.Version = doc.Version
 		data.ViewCount = doc.ViewCount
 

@@ -87,11 +87,11 @@ mindoc_windows_amd64.exe install
 
 ## 4.2. 编译(sqlite需要CGO支持)
 
-`go build -ldflags "-w" -o mindoc main.go`
+`go build -ldflags "-w" -o laykbms main.go`
 
 ## 4.3. 执行
 
-`./mindoc`
+`./laykbms`
 
 # 5. 正常开发
 
