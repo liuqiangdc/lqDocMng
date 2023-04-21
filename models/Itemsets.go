@@ -12,11 +12,11 @@ import (
 	"github.com/mindoc-org/mindoc/utils/cryptil"
 )
 
-//项目空间
+//知识域广场
 type Itemsets struct {
 	ItemId      int       `orm:"column(item_id);pk;auto;unique" json:"item_id"`
-	ItemName    string    `orm:"column(item_name);size(500);description(项目空间名称)" json:"item_name"`
-	ItemKey     string    `orm:"column(item_key);size(100);unique;description(项目空间标识)" json:"item_key"`
+	ItemName    string    `orm:"column(item_name);size(500);description(知识域广场名称)" json:"item_name"`
+	ItemKey     string    `orm:"column(item_key);size(100);unique;description(知识域广场标识)" json:"item_key"`
 	Description string    `orm:"column(description);type(text);null;description(描述)" json:"description"`
 	MemberId    int       `orm:"column(member_id);size(100);description(所属用户)" json:"member_id"`
 	CreateTime  time.Time `orm:"column(create_time);type(datetime);auto_now_add;description(创建时间)" json:"create_time"`
@@ -55,7 +55,7 @@ func (item *Itemsets) First(itemId int) (*Itemsets, error) {
 	}
 	err := item.QueryTable().Filter("item_id", itemId).One(item)
 	if err != nil {
-		logs.Error("查询项目空间失败 -> item_id=", itemId, err)
+		logs.Error("查询知识域广场失败 -> item_id=", itemId, err)
 	} else {
 		item.Include()
 	}
@@ -65,7 +65,7 @@ func (item *Itemsets) First(itemId int) (*Itemsets, error) {
 func (item *Itemsets) FindFirst(itemKey string) (*Itemsets, error) {
 	err := item.QueryTable().Filter("item_key", itemKey).One(item)
 	if err != nil {
-		logs.Error("查询项目空间失败 -> itemKey=", itemKey, err)
+		logs.Error("查询知识域广场失败 -> itemKey=", itemKey, err)
 	} else {
 		item.Include()
 	}
@@ -84,14 +84,14 @@ func (item *Itemsets) Save() (err error) {
 	item.ItemKey = strings.TrimSpace(item.ItemKey)
 
 	if item.ItemName == "" {
-		return errors.New("项目空间名称不能为空")
+		return errors.New("知识域广场名称不能为空")
 	}
 	if item.ItemKey == "" {
 		item.ItemKey = cryptil.NewRandChars(16)
 	}
 
 	if item.QueryTable().Filter("item_id__ne", item.ItemId).Filter("item_key", item.ItemKey).Exist() {
-		return errors.New("项目空间标识已存在")
+		return errors.New("知识域广场标识已存在")
 	}
 	if item.ItemId > 0 {
 		_, err = orm.NewOrm().Update(item)
@@ -107,10 +107,10 @@ func (item *Itemsets) Delete(itemId int) (err error) {
 		return ErrInvalidParameter
 	}
 	if itemId == 1 {
-		return errors.New("默认项目空间不能删除")
+		return errors.New("默认知识域广场不能删除")
 	}
 	if !item.Exist(itemId) {
-		return errors.New("项目空间不存在")
+		return errors.New("知识域广场不存在")
 	}
 	ormer := orm.NewOrm()
 	o, err := ormer.Begin()
@@ -120,12 +120,12 @@ func (item *Itemsets) Delete(itemId int) (err error) {
 	}
 	_, err = o.QueryTable(item.TableNameWithPrefix()).Filter("item_id", itemId).Delete()
 	if err != nil {
-		logs.Error("删除项目空间失败 -> item_id=", itemId, err)
+		logs.Error("删除知识域广场失败 -> item_id=", itemId, err)
 		o.Rollback()
 	}
 	_, err = o.Raw("update md_books set item_id=1 where item_id=?;", itemId).Exec()
 	if err != nil {
-		logs.Error("删除项目空间失败 -> item_id=", itemId, err)
+		logs.Error("删除知识域广场失败 -> item_id=", itemId, err)
 		o.Rollback()
 	}
 
@@ -178,7 +178,7 @@ func (item *Itemsets) FindToPager(pageIndex, pageSize int) (list []*Itemsets, to
 	return
 }
 
-//根据项目空间名称查询.
+//根据知识域广场名称查询.
 func (item *Itemsets) FindItemsetsByName(name string, limit int) (*SelectMemberResult, error) {
 	result := SelectMemberResult{}
 
@@ -191,7 +191,7 @@ func (item *Itemsets) FindItemsetsByName(name string, limit int) (*SelectMemberR
 		_, err = item.QueryTable().Filter("item_name__icontains", name).Limit(limit).All(&itemsets)
 	}
 	if err != nil {
-		logs.Error("查询项目空间失败 ->", err)
+		logs.Error("查询知识域广场失败 ->", err)
 		return &result, err
 	}
 
@@ -208,14 +208,14 @@ func (item *Itemsets) FindItemsetsByName(name string, limit int) (*SelectMemberR
 	return &result, err
 }
 
-//根据项目空间标识查询项目空间的项目列表.
+//根据知识域广场标识查询知识域广场的项目列表.
 func (item *Itemsets) FindItemsetsByItemKey(key string, pageIndex, pageSize, memberId int) (books []*BookResult, totalCount int, err error) {
 	o := orm.NewOrm()
 
 	err = item.QueryTable().Filter("item_key", key).One(item)
 
 	if err != nil {
-		logs.Error("查询项目空间时出错 ->", key, err)
+		logs.Error("查询知识域广场时出错 ->", key, err)
 		return nil, 0, err
 	}
 	offset := (pageIndex - 1) * pageSize
@@ -233,7 +233,7 @@ WHERE book.item_id = ? AND (book.privately_owned = 0 or rel.role_id >= 0 or team
 
 		err = o.Raw(sql1, memberId, memberId, item.ItemId).QueryRow(&totalCount)
 		if err != nil {
-			logs.Error("查询项目空间时出错 ->", key, err)
+			logs.Error("查询知识域广场时出错 ->", key, err)
 			return
 		}
 		sql2 := `SELECT book.*,rel1.*,mdmb.account AS create_name FROM md_books AS book

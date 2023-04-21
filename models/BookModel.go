@@ -35,26 +35,26 @@ var once = sync.Once{}
 // Book struct .
 type Book struct {
 	BookId int `orm:"pk;auto;unique;column(book_id)" json:"book_id"`
-	// BookName 项目名称.
+	// BookName 知识域名称.
 	BookName string `orm:"column(book_name);size(500);description(名称)" json:"book_name"`
-	//所属项目空间
-	ItemId int `orm:"column(item_id);type(int);default(1);description(所属项目空间id)" json:"item_id"`
-	// Identify 项目唯一标识.
+	//所属知识域广场
+	ItemId int `orm:"column(item_id);type(int);default(1);description(所属知识域广场id)" json:"item_id"`
+	// Identify 知识域唯一标识.
 	Identify string `orm:"column(identify);size(100);unique;description(唯一标识)" json:"identify"`
 	//是否是自动发布 0 否/1 是
 	AutoRelease int `orm:"column(auto_release);type(int);default(0);description(是否是自动发布 0 否/1 是)" json:"auto_release"`
 	//是否开启下载功能 0 是/1 否
 	IsDownload int `orm:"column(is_download);type(int);default(0);description(是否开启下载功能 0 是/1 否)" json:"is_download"`
 	OrderIndex int `orm:"column(order_index);type(int);default(0);description(排序)" json:"order_index"`
-	// Description 项目描述.
-	Description string `orm:"column(description);size(2000);description(项目描述)" json:"description"`
+	// Description 知识域描述.
+	Description string `orm:"column(description);size(2000);description(知识域描述)" json:"description"`
 	//发行公司
 	Publisher string `orm:"column(publisher);size(500);description(发行公司)" json:"publisher"`
 	Label     string `orm:"column(label);size(500);description(所属标签)" json:"label"`
-	// PrivatelyOwned 项目私有： 0 公开/ 1 私有
-	PrivatelyOwned int `orm:"column(privately_owned);type(int);default(0);description(项目私有： 0 公开/ 1 私有)" json:"privately_owned"`
-	// 当项目是私有时的访问Token.
-	PrivateToken string `orm:"column(private_token);size(500);null;description(当项目是私有时的访问Token)" json:"private_token"`
+	// PrivatelyOwned 知识域私有： 0 公开/ 1 私有
+	PrivatelyOwned int `orm:"column(privately_owned);type(int);default(0);description(知识域私有： 0 公开/ 1 私有)" json:"privately_owned"`
+	// 当知识域是私有时的访问Token.
+	PrivateToken string `orm:"column(private_token);size(500);null;description(当知识域是私有时的访问Token)" json:"private_token"`
 	//访问密码.
 	BookPassword string `orm:"column(book_password);size(500);null;description(访问密码)" json:"book_password"`
 	//状态：0 正常/1 已删除
@@ -79,8 +79,8 @@ type Book struct {
 	MemberId      int       `orm:"column(member_id);size(100);description(作者id)" json:"member_id"`
 	ModifyTime    time.Time `orm:"type(datetime);column(modify_time);null;auto_now;description(修改时间)" json:"modify_time"`
 	Version       int64     `orm:"type(bigint);column(version);description(版本)" json:"version"`
-	//是否使用第一篇文章项目为默认首页,0 否/1 是
-	IsUseFirstDocument int `orm:"column(is_use_first_document);type(int);default(0);description(是否使用第一篇文章项目为默认首页,0 否/1 是)" json:"is_use_first_document"`
+	//是否使用第一篇文章知识域为默认首页,0 否/1 是
+	IsUseFirstDocument int `orm:"column(is_use_first_document);type(int);default(0);description(是否使用第一篇文章知识域为默认首页,0 否/1 是)" json:"is_use_first_document"`
 	//是否开启自动保存：0 否/1 是
 	AutoSave int `orm:"column(auto_save);type(tinyint);default(0);description(是否开启自动保存：0 否/1 是)" json:"auto_save"`
 }
@@ -115,7 +115,7 @@ func NewBook() *Book {
 	return &Book{}
 }
 
-// 添加一个项目
+// 添加一个知识域
 func (book *Book) Insert(lang string) error {
 	o := orm.NewOrm()
 	//	o.Begin()
@@ -136,7 +136,7 @@ func (book *Book) Insert(lang string) error {
 		relationship.MemberId = book.MemberId
 		err = relationship.Insert()
 		if err != nil {
-			logs.Error("插入项目与用户关联 -> ", err)
+			logs.Error("插入知识域与用户关联 -> ", err)
 			//o.Rollback()
 			return err
 		}
@@ -167,7 +167,7 @@ func (book *Book) Find(id int, cols ...string) (*Book, error) {
 	return book, err
 }
 
-// 更新一个项目
+// 更新一个知识域
 func (book *Book) Update(cols ...string) error {
 	o := orm.NewOrm()
 
@@ -188,14 +188,14 @@ func (book *Book) Update(cols ...string) error {
 	return err
 }
 
-// 复制项目
+// 复制知识域
 func (book *Book) Copy(identify string) error {
 	o := orm.NewOrm()
 
 	err := o.QueryTable(book.TableNameWithPrefix()).Filter("identify", identify).One(book)
 
 	if err != nil {
-		logs.Error("查询项目时出错 -> ", err)
+		logs.Error("查询知识域时出错 -> ", err)
 		return err
 	}
 	if _, err := o.Begin(); err != nil {
@@ -242,7 +242,7 @@ func (book *Book) Copy(identify string) error {
 		return err
 
 	}); err != nil {
-		logs.Error("复制项目时出错： %s", err)
+		logs.Error("复制知识域时出错： %s", err)
 		return err
 	}
 
@@ -252,7 +252,7 @@ func (book *Book) Copy(identify string) error {
 		_, err := txo.QueryTable(NewRelationship().TableNameWithPrefix()).Filter("book_id", bookId).All(&rels)
 		return err
 	}); err != nil {
-		logs.Error("复制项目关系时出错 -> ", err)
+		logs.Error("复制知识域关系时出错 -> ", err)
 		return err
 	}
 
@@ -263,7 +263,7 @@ func (book *Book) Copy(identify string) error {
 			_, err := txo.Insert(rel)
 			return err
 		}); err != nil {
-			logs.Error("复制项目关系时出错 -> ", err)
+			logs.Error("复制知识域关系时出错 -> ", err)
 			return err
 		}
 	}
@@ -274,7 +274,7 @@ func (book *Book) Copy(identify string) error {
 		_, err := txOrm.QueryTable(NewDocument().TableNameWithPrefix()).Filter("book_id", bookId).Filter("parent_id", 0).All(&docs)
 		return err
 	}); err != nil && err != orm.ErrNoRows {
-		logs.Error("读取项目文档时出错 -> ", err)
+		logs.Error("读取知识域文档时出错 -> ", err)
 		return err
 	}
 
@@ -282,7 +282,7 @@ func (book *Book) Copy(identify string) error {
 		if err := o.DoTx(func(ctx context.Context, txOrm orm.TxOrmer) error {
 			return recursiveInsertDocument(docs, txOrm, book.BookId, 0)
 		}); err != nil {
-			logs.Error("复制项目时出错 -> ", err)
+			logs.Error("复制知识域时出错 -> ", err)
 			return err
 		}
 	}
@@ -301,7 +301,7 @@ func recursiveInsertDocument(docs []*Document, o orm.TxOrmer, bookId int, parent
 		doc.Version = time.Now().Unix()
 
 		if _, err := o.Insert(doc); err != nil {
-			logs.Error("插入项目时出错 -> ", err)
+			logs.Error("插入知识域时出错 -> ", err)
 			return err
 		}
 
@@ -353,7 +353,7 @@ func (book *Book) FindByFieldFirst(field string, value interface{}) (*Book, erro
 
 }
 
-// 根据项目标识查询项目
+// 根据知识域标识查询知识域
 func (book *Book) FindByIdentify(identify string, cols ...string) (*Book, error) {
 	o := orm.NewOrm()
 
@@ -362,7 +362,7 @@ func (book *Book) FindByIdentify(identify string, cols ...string) (*Book, error)
 	return book, err
 }
 
-// 分页查询指定用户的项目
+// 分页查询指定用户的知识域
 func (book *Book) FindToPager(pageIndex, pageSize, memberId int, lang string) (books []*BookResult, totalCount int, err error) {
 
 	o := orm.NewOrm()
@@ -414,7 +414,7 @@ ORDER BY book.order_index, book.book_id DESC limit ?,?`
 
 	_, err = o.Raw(sql2, memberId, memberId, offset, pageSize).QueryRows(&books)
 	if err != nil {
-		logs.Error("分页查询项目列表 => ", err)
+		logs.Error("分页查询知识域列表 => ", err)
 		return
 	}
 	sql := "SELECT m.account,doc.modify_time FROM md_documents AS doc LEFT JOIN md_members AS m ON doc.modify_at=m.member_id WHERE book_id = ? LIMIT 1 ORDER BY doc.modify_time DESC"
@@ -444,7 +444,7 @@ ORDER BY book.order_index, book.book_id DESC limit ?,?`
 	return
 }
 
-// 彻底删除项目.
+// 彻底删除知识域.
 func (book *Book) ThoroughDeleteBook(id int) error {
 	if id <= 0 {
 		return ErrInvalidParameter
@@ -472,7 +472,7 @@ func (book *Book) ThoroughDeleteBook(id int) error {
 	}); err != nil {
 		return err
 	}
-	//删除项目
+	//删除知识域
 	if err := o.DoTx(func(ctx context.Context, txOrm orm.TxOrmer) error {
 		_, err = txOrm.Raw("DELETE FROM "+book.TableNameWithPrefix()+" WHERE book_id = ?", book.BookId).Exec()
 		return err
@@ -510,11 +510,11 @@ func (book *Book) ThoroughDeleteBook(id int) error {
 
 	//删除导出缓存
 	if err := os.RemoveAll(filepath.Join(conf.GetExportOutputPath(), strconv.Itoa(id))); err != nil {
-		logs.Error("删除项目缓存失败 ->", err)
+		logs.Error("删除知识域缓存失败 ->", err)
 	}
 	//删除附件和图片
 	if err := os.RemoveAll(filepath.Join(conf.WorkingDirectory, "uploads", book.Identify)); err != nil {
-		logs.Error("删除项目附件和图片失败 ->", err)
+		logs.Error("删除知识域附件和图片失败 ->", err)
 	}
 
 	return nil
@@ -657,7 +657,7 @@ func (book *Book) ReleaseContent(bookId int, lang string) {
 					_ = item.ReleaseContent()
 				}
 
-				//当文档发布后，需要删除已缓存的转换项目
+				//当文档发布后，需要删除已缓存的转换知识域
 				outputPath := filepath.Join(conf.GetExportOutputPath(), strconv.Itoa(bookId))
 				_ = os.RemoveAll(outputPath)
 			}
@@ -680,7 +680,7 @@ func (book *Book) ResetDocumentNumber(bookId int) {
 	}
 }
 
-// 导入zip项目
+// 导入zip知识域
 func (book *Book) ImportBook(zipPath string, lang string) error {
 	if !filetil.FileExists(zipPath) {
 		return errors.New("文件不存在 => " + zipPath)
@@ -770,7 +770,7 @@ func (book *Book) ImportBook(zipPath string, lang string) error {
 					originalImageUrl := string(images[0][2])
 					imageUrl := strings.Replace(string(originalImageUrl), "\\", "/", -1)
 
-					//如果是本地路径，则需要将图片复制到项目目录
+					//如果是本地路径，则需要将图片复制到知识域目录
 					if !strings.HasPrefix(imageUrl, "http://") &&
 						!strings.HasPrefix(imageUrl, "https://") &&
 						!strings.HasPrefix(imageUrl, "ftp://") {
@@ -846,7 +846,7 @@ func (book *Book) ImportBook(zipPath string, lang string) error {
 						if filetil.FileExists(linkPath) {
 							ext := filepath.Ext(linkPath)
 							//logs.Info("当前后缀 -> ",ext)
-							//如果链接是Markdown文件，则生成文档标识,否则，将目标文件复制到项目目录
+							//如果链接是Markdown文件，则生成文档标识,否则，将目标文件复制到知识域目录
 							if strings.EqualFold(ext, ".md") || strings.EqualFold(ext, ".markdown") {
 								docIdentify := strings.Replace(strings.TrimPrefix(strings.Replace(linkPath, "\\", "/", -1), tempPath+"/"), "/", "-", -1)
 								//logs.Info(originalLink, "|", linkPath, "|", docIdentify)
@@ -972,15 +972,15 @@ func (book *Book) ImportBook(zipPath string, lang string) error {
 	})
 
 	if err != nil {
-		logs.Error("导入项目异常 => ", err)
-		book.Description = "【项目导入存在错误：" + err.Error() + "】"
+		logs.Error("导入知识域异常 => ", err)
+		book.Description = "【知识域导入存在错误：" + err.Error() + "】"
 	}
-	logs.Info("项目导入完毕 => ", book.BookName)
+	logs.Info("知识域导入完毕 => ", book.BookName)
 	book.ReleaseContent(book.BookId, lang)
 	return err
 }
 
-// 导入docx项目
+// 导入docx知识域
 func (book *Book) ImportWordBook(docxPath string, lang string) (err error) {
 	if !filetil.FileExists(docxPath) {
 		return errors.New("文件不存在")
@@ -996,7 +996,7 @@ func (book *Book) ImportWordBook(docxPath string, lang string) (err error) {
 	relationship.MemberId = book.MemberId
 	err = relationship.Insert()
 	if err != nil {
-		logs.Error("插入项目与用户关联 -> ", err)
+		logs.Error("插入知识域与用户关联 -> ", err)
 		return err
 	}
 
@@ -1012,7 +1012,7 @@ func (book *Book) ImportWordBook(docxPath string, lang string) (err error) {
 	doc.Identify = docIdentify
 
 	if doc.Markdown, err = utils.Docx2md(docxPath, false); err != nil {
-		logs.Error("导入doc项目转换异常 => ", err)
+		logs.Error("导入doc知识域转换异常 => ", err)
 		return err
 	}
 
@@ -1042,10 +1042,10 @@ func (book *Book) ImportWordBook(docxPath string, lang string) (err error) {
 		logs.Error(doc.DocumentId, err)
 	}
 	if err != nil {
-		logs.Error("导入项目异常 => ", err)
-		book.Description = "【项目导入存在错误：" + err.Error() + "】"
+		logs.Error("导入知识域异常 => ", err)
+		book.Description = "【知识域导入存在错误：" + err.Error() + "】"
 	}
-	logs.Info("项目导入完毕 => ", book.BookName)
+	logs.Info("知识域导入完毕 => ", book.BookName)
 	book.ReleaseContent(book.BookId, lang)
 	return err
 }
@@ -1072,7 +1072,7 @@ where mtr.book_id = ? and mtm.member_id = ? order by mtm.role_id asc limit 1;`
 	err = o.Raw(sql, bookId, memberId).QueryRow(&roleId)
 
 	if err != nil {
-		logs.Error("查询用户项目角色出错 -> book_id=", bookId, " member_id=", memberId, err)
+		logs.Error("查询用户知识域角色出错 -> book_id=", bookId, " member_id=", memberId, err)
 		return 0, err
 	}
 	return conf.BookRole(roleId), nil
