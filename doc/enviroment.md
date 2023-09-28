@@ -34,12 +34,14 @@ go
 
 ```
 管理员身份，进入mysql目录`C:\Program Files\MySQL\MySQL Server 8.0\bin`;
-链接数据库`mysql -u root -p`
+链接数据库`mysql -u root -p123456`
 输入密码`123456`
 ```
-* 新建数据库。执行`CREATE DATABASE laykbms_db  DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_general_ci;`
-CREATE DATABASE laykbms_db  DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_general_ci;
-mysqldump laykbms_db -u root -p123456  | mysql laykbms_db -u root -p123456
+* 新建数据库。执行
+```
+CREATE DATABASE test5  DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_general_ci;
+mysqldump laykbms_db -u root -p123456  | mysql test5 -u root -p123456
+```
 * 配置数据库连接。
 
 ```
